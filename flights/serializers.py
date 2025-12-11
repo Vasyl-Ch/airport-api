@@ -1,4 +1,6 @@
+from drf_spectacular.types import OpenApiTypes
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from .models import Flight, AirplaneType, Airplane, Crew
 
@@ -10,6 +12,8 @@ class AirplaneTypeSerializer(serializers.ModelSerializer):
 
 
 class AirplaneSerializer(serializers.ModelSerializer):
+    capacity = serializers.IntegerField(read_only=True)
+    
     class Meta:
         model = Airplane
         fields = [
@@ -23,17 +27,33 @@ class AirplaneSerializer(serializers.ModelSerializer):
 
 
 class AirplaneListSerializer(AirplaneSerializer):
-    airplane_type = serializers.CharField(source="airplane_type.name", read_only=True)
+    airplane_type = serializers.CharField(read_only=True)
+    capacity = serializers.SerializerMethodField()
+
+    @extend_schema_field(int)
+    def get_capacity(self, obj: Airplane) -> int:
+        return obj.capacity
 
 
 class AirplaneDetailSerializer(AirplaneSerializer):
-    airplane_type = AirplaneTypeSerializer(source="airplane_type", read_only=True)
+    airplane_type = AirplaneTypeSerializer(read_only=True)
+    capacity = serializers.SerializerMethodField()
+
+    @extend_schema_field(int)
+    def get_capacity(self, obj: Airplane) -> int:
+        return obj.capacity
 
 
 class CrewSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    
     class Meta:
         model = Crew
         fields = ["id", "first_name", "last_name", "full_name"]
+    
+    @extend_schema_field(str)
+    def get_full_name(self, obj: Crew) -> str:
+        return obj.full_name
 
 
 class FlightSerializer(serializers.ModelSerializer):
@@ -51,11 +71,12 @@ class FlightSerializer(serializers.ModelSerializer):
 
 class FlightListSerializer(FlightSerializer):
     airplane = serializers.CharField(source="airplane.name", read_only=True)
-    route = serializers.StringRelatedField(source="route", read_only=True)
+    route = serializers.StringRelatedField(read_only=True)
     airplane_capacity = serializers.IntegerField(source="airplane.capacity", read_only=True)
     tickets_available = serializers.SerializerMethodField()
 
-    def get_tickets_available(self, obj):
+    @extend_schema_field(int)
+    def get_tickets_available(self, obj: Flight) -> int:
         return obj.airplane.capacity - obj.tickets.count()
 
     class Meta:
@@ -73,12 +94,13 @@ class FlightListSerializer(FlightSerializer):
 
 
 class FlightDetailSerializer(FlightSerializer):
-    airplane = AirplaneDetailSerializer(source="airplane", read_only=True)
-    route = serializers.StringRelatedField(source="route", read_only=True)
-    crew = CrewSerializer(source="crew", read_only=True)
+    airplane = AirplaneDetailSerializer(read_only=True)
+    route = serializers.StringRelatedField(read_only=True)
+    crew = CrewSerializer(many=True, read_only=True)
     taken_seats = serializers.SerializerMethodField()
 
-    def get_taken_seats(self, obj):
+    @extend_schema_field(OpenApiTypes.OBJECT)
+    def get_taken_seats(self, obj: Flight) -> list[dict[str, int]]:
         return [
             {"row": ticket.row, "seat": ticket.seat}
             for ticket in obj.tickets.all()

@@ -15,12 +15,10 @@ class AirportListSerializer(AirportSerializer):
 
 class AirportDetailSerializer(AirportSerializer):
     source_routes = serializers.StringRelatedField(
-        source="source_routes",
         many=True,
         read_only=True
     )
     destination_routes = serializers.StringRelatedField(
-        source="destination_routes",
         many=True,
         read_only=True
     )
@@ -44,14 +42,14 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class RouteListSerializer(RouteSerializer):
-    source = serializers.StringRelatedField(source="source.name", read_only=True)
-    destination = serializers.StringRelatedField(source="destination.name", read_only=True)
+    source = serializers.CharField(source="source.name", read_only=True)
+    destination = serializers.CharField(source="destination.name", read_only=True)
 
 
 class RouteDetailSerializer(RouteSerializer):
-    source = AirportSerializer(source="source", read_only=True)
-    destination = AirportSerializer(source="destination", read_only=True)
-    flights = serializers.StringRelatedField(source="flights", read_only=True, many=True)
+    source = AirportSerializer(read_only=True)
+    destination = AirportSerializer(read_only=True)
+    flights = serializers.StringRelatedField(read_only=True, many=True)
 
     class Meta:
         model = Route

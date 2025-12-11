@@ -26,7 +26,7 @@ class TicketSerializer(serializers.ModelSerializer):
         return data
 
 class TicketListSerializer(TicketSerializer):
-    flight = FlightListSerializer(source="flight", read_only=True)
+    flight = FlightListSerializer(read_only=True)
 
     class Meta:
         model = Ticket
@@ -48,7 +48,7 @@ class TicketSeatsSerializer(serializers.Serializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=True)
+    tickets = TicketSerializer(many=True)
 
     class Meta:
         model = Order
@@ -67,4 +67,8 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
 class OrderListSerializer(OrderSerializer):
+    tickets = TicketSerializer(many=True, read_only=True)
+
+
+class OrderDetailSerializer(OrderSerializer):
     tickets = TicketListSerializer(many=True, read_only=True)
