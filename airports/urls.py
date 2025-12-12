@@ -4,7 +4,7 @@ from airports.views import AirportViewSet, RouteViewSet
 
 router = DefaultRouter()
 router.register("airports", AirportViewSet)
-router.register("routes", RouteViewSet)
+router.register("routes", RouteViewSet, basename="routes")
 
 urlpatterns = router.urls
 
