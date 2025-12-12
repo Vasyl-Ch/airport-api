@@ -18,7 +18,7 @@ class AirplaneTypeSerializer(serializers.ModelSerializer):
 
 class AirplaneSerializer(serializers.ModelSerializer):
     capacity = serializers.IntegerField(read_only=True)
-    
+
     class Meta:
         model = Airplane
         fields = [
@@ -51,11 +51,11 @@ class AirplaneDetailSerializer(AirplaneSerializer):
 
 class CrewSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Crew
         fields = ["id", "first_name", "last_name", "full_name"]
-    
+
     @extend_schema_field(str)
     def get_full_name(self, obj: Crew) -> str:
         return obj.full_name
@@ -77,7 +77,10 @@ class FlightSerializer(serializers.ModelSerializer):
 class FlightListSerializer(FlightSerializer):
     airplane = serializers.CharField(source="airplane.name", read_only=True)
     route = serializers.StringRelatedField(read_only=True)
-    airplane_capacity = serializers.IntegerField(source="airplane.capacity", read_only=True)
+    airplane_capacity = serializers.IntegerField(
+        source="airplane.capacity",
+        read_only=True
+    )
     tickets_available = serializers.SerializerMethodField()
 
     @extend_schema_field(int)
@@ -95,7 +98,6 @@ class FlightListSerializer(FlightSerializer):
             "arrival_time",
             "tickets_available"
         ]
-
 
 
 class FlightDetailSerializer(FlightSerializer):

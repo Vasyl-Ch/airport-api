@@ -46,8 +46,16 @@ class Crew(models.Model):
 class Flight(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
-    airplane = models.ForeignKey(Airplane, on_delete=models.CASCADE, related_name="flights")
-    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="flights")
+    airplane = models.ForeignKey(
+        Airplane,
+        on_delete=models.CASCADE,
+        related_name="flights"
+    )
+    route = models.ForeignKey(
+        Route,
+        on_delete=models.CASCADE,
+        related_name="flights"
+    )
     crew = models.ManyToManyField(Crew, related_name="flights")
 
     class Meta:

@@ -1,5 +1,5 @@
 from django.db import models
-from rest_framework.exceptions import ValidationError
+from django.core.exceptions import ValidationError
 
 from flights.models import Flight
 from users.models import User
@@ -38,7 +38,10 @@ class Ticket(models.Model):
         unique_together = ["flight", "row", "seat"]
 
     def __str__(self):
-        return f"Ticket #{self.id} Flight #{self.flight.id} for {self.flight} - Row {self.row}, Seat {self.seat}"
+        return (f"Ticket #{self.id} "
+                f"Flight #{self.flight.id} for "
+                f"{self.flight} - Row {self.row}, "
+                f"Seat {self.seat}")
 
     def clean(self):
         if self.row > self.flight.airplane.rows:
@@ -47,7 +50,8 @@ class Ticket(models.Model):
             )
         if self.seat > self.flight.airplane.seats_in_row:
             raise ValidationError(
-                f"Seat number cannot exceed {self.flight.airplane.seats_in_row}"
+                f"Seat number cannot exceed "
+                f"{self.flight.airplane.seats_in_row}"
             )
 
     def save(self, *args, **kwargs):

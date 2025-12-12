@@ -10,7 +10,13 @@ class AirplaneTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Airplane)
 class AirplaneAdmin(admin.ModelAdmin):
-    list_display = ["name", "airplane_type", "rows", "seats_in_row", "capacity"]
+    list_display = [
+        "name",
+        "airplane_type",
+        "rows",
+        "seats_in_row",
+        "capacity"
+    ]
     list_filter = ["airplane_type"]
     search_fields = ["name"]
 

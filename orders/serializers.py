@@ -28,6 +28,7 @@ class TicketSerializer(serializers.ModelSerializer):
             raise ValidationError("Ticket already exists")
         return data
 
+
 class TicketListSerializer(TicketSerializer):
     flight = FlightListSerializer(read_only=True)
 
@@ -68,6 +69,7 @@ class OrderSerializer(serializers.ModelSerializer):
         for ticket_data in tickets_data:
             Ticket.objects.create(order=order, **ticket_data)
         return order
+
 
 class OrderListSerializer(OrderSerializer):
     tickets = TicketSerializer(many=True, read_only=True)

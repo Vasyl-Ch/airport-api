@@ -78,7 +78,9 @@ class FlightViewSet(viewsets.ModelViewSet):
         if source:
             queryset = queryset.filter(route__source__name__icontains=source)
         if destination:
-            queryset = queryset.filter(route__destination__name__icontains=destination)
+            queryset = queryset.filter(
+                route__destination__name__icontains=destination
+            )
         if date:
             queryset = queryset.filter(departure_time__date=date)
 

@@ -43,10 +43,12 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ["id", "source", "destination", "distance"]
 
 
-
 class RouteListSerializer(RouteSerializer):
     source = serializers.CharField(source="source.name", read_only=True)
-    destination = serializers.CharField(source="destination.name", read_only=True)
+    destination = serializers.CharField(
+        source="destination.name",
+        read_only=True
+    )
 
 
 class RouteDetailSerializer(RouteSerializer):
@@ -63,4 +65,3 @@ class RouteDetailSerializer(RouteSerializer):
             "distance",
             "flights"
         ]
-
