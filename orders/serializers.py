@@ -2,7 +2,10 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from orders.models import Order, Ticket
+from orders.models import (
+    Order,
+    Ticket
+)
 from flights.serializers import FlightListSerializer
 
 

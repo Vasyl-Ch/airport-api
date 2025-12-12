@@ -2,7 +2,12 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 
-from .models import Flight, AirplaneType, Airplane, Crew
+from flights.models import (
+    Flight,
+    AirplaneType,
+    Airplane,
+    Crew
+)
 
 
 class AirplaneTypeSerializer(serializers.ModelSerializer):

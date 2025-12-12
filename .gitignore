@@ -1,0 +1,6 @@
+.env
+.idea
+.idea/workspace.xml
+*__pycache__
+*migrations
+db.sqlite3
