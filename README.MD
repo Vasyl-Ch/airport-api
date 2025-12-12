@@ -163,6 +163,9 @@ The API will be available at `http://localhost:8000/`
 
 ### Run with Docker
 
+Docker Hub: link for image
+https://hub.docker.com/r/kukuruza07/airport_api-app
+
 Docker provides the easiest way to get the application up and running.
 
 1. **Ensure Docker is installed:**
