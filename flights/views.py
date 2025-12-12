@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
+from django.db.models import Count
 
 from config.permissions import IsAdminOrIfAuthenticatedReadOnly
 from flights.models import (
@@ -63,6 +64,12 @@ class FlightViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+
+        if self.action == "retrieve":
+            queryset = queryset.prefetch_related("tickets")
+
+        if self.action == "list":
+            queryset = queryset.annotate(tickets_count=Count("tickets"))
 
         source = self.request.query_params.get("source")
         destination = self.request.query_params.get("destination")

@@ -1,7 +1,8 @@
+from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from orders.models import Order
+from orders.models import Order, Ticket
 from orders.serializers import (
     OrderSerializer,
     OrderListSerializer,
@@ -10,16 +11,20 @@ from orders.serializers import (
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.prefetch_related(
-        "tickets__flight__route__source",
-        "tickets__flight__route__destination",
-        "tickets__flight__airplane"
-    )
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user).prefetch_related(
+            Prefetch(
+                "tickets",
+                queryset=Ticket.objects.select_related(
+                    "flight__route__source",
+                    "flight__route__destination",
+                    "flight__airplane__airplane_type"
+                ).prefetch_related("flight__crew")
+            )
+        )
 
     def get_serializer_class(self):
         if self.action == "list":
