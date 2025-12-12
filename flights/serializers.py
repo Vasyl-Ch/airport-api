@@ -82,7 +82,7 @@ class FlightListSerializer(FlightSerializer):
 
     @extend_schema_field(int)
     def get_tickets_available(self, obj: Flight) -> int:
-        return obj.airplane.capacity - getattr(obj, "tickets_count", 0)
+        return obj.airplane.capacity - obj.tickets.count()
 
     class Meta:
         model = Flight
