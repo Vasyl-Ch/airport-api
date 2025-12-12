@@ -2,7 +2,11 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from orders.models import Order
-from orders.serializers import OrderSerializer, OrderListSerializer
+from orders.serializers import (
+    OrderSerializer,
+    OrderListSerializer,
+    OrderDetailSerializer
+)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -20,6 +24,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return OrderListSerializer
+        if self.action == "retrieve":
+            return OrderDetailSerializer
         return OrderSerializer
 
     def perform_create(self, serializer):
